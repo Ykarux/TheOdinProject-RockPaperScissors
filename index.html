@@ -3,12 +3,21 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Rock Papers Scissors</title>
+		<link href="./style.css"
+		      rel="stylesheet">
 	</head>
 	<body>
-		<button>Rock</button>
-		<button>Papers</button>
-		<button>Scissors</button>
+		<button class="rock">Rock</button>
+		<button class="papers">Papers</button>
+		<button class="scissors">Scissors</button>
+		<div class="result"></div>
+		<div class="gameResult"></div>
 		<script>
+			let scorePlayer = 0;
+			let scoreComputer = 0;
+			let div = document.querySelector('.result')
+			let divGameResult = document.querySelector('.gameResult')
+
 			function getComputerChoice() {
 				let choice = Math.random()
 				if (choice > 0.33) {
@@ -42,31 +51,61 @@
 				}
 			}
 
-			function game() {
-				let scorePlayer = 0;
-				let scoreComputer = 0;
-				console.log('Starting a game !')
-				for (let i = 0; i < 5; i++) {
-					let playerSelection = prompt('Your choice :')
-					let computerSelection = getComputerChoice()
-					let result = playRound(playerSelection, computerSelection)
-					if (result === 1) {
-						scorePlayer++
-						console.log('You Win! ' + playerSelection + ' beats ' + computerSelection)
-					} else if (result === 2) {
-						scoreComputer++
-						console.log('You Loose! ' + computerSelection + ' beats ' + playerSelection)
-					} else {
-						console.log('It\'s a tie! ' + playerSelection + ' and ' + computerSelection)
-					}
-					console.log('Score : ' + scorePlayer + '-' + scoreComputer)
+			function displayScore(result, playerSelection, computerSelection) {
+				const p = document.createElement('p')
+				const pResult = document.createElement('p')
+				while (div.firstChild) {
+					div.removeChild(div.firstChild)
 				}
-				if (scorePlayer > scoreComputer) console.log('You won the game: ' + scorePlayer + '-' + scoreComputer)
-				else if (scorePlayer < scoreComputer) console.log('You lost the game: ' + scorePlayer + '-' + scoreComputer)
-				else console.log('Tie game: ' + scorePlayer + '-' + scoreComputer)
+				if (result === 1) {
+					scorePlayer++
+					p.textContent = 'You Win! ' + playerSelection + ' beats ' + computerSelection
+				} else if (result === 2) {
+					scoreComputer++
+					p.textContent = 'You Loose! ' + computerSelection + ' beats ' + playerSelection
+				} else {
+					p.textContent = 'It\'s a tie! ' + playerSelection + ' and ' + computerSelection
+				}
+				pResult.textContent = 'Score : ' + scorePlayer + '-' + scoreComputer
+				div.appendChild(p)
+				div.appendChild(pResult)
+				if (scorePlayer > 4 || scoreComputer > 4) {
+					gameOver()
+				}
 			}
 
-			game()
+			function gameOver() {
+				let p = document.createElement('p')
+				if (scorePlayer > 4) {
+					p.textContent = 'You won the game: ' + scorePlayer + '-' + scoreComputer
+				} else if (scoreComputer > 4) {
+					p.textContent = 'You lost the game: ' + scorePlayer + '-' + scoreComputer
+				}
+				divGameResult.appendChild(p)
+				scoreComputer = 0
+				scorePlayer = 0
+			}
+
+			const rock = document.querySelector('.rock')
+			const papers = document.querySelector('.papers')
+			const scissors = document.querySelector('.scissors')
+			rock.addEventListener('click', e => {
+				let computerChoice = getComputerChoice()
+				let result = playRound('rock', computerChoice)
+				displayScore(result, 'rock', computerChoice)
+			})
+			papers.addEventListener('click', e => {
+				let computerChoice = getComputerChoice()
+				let result = playRound('papers', computerChoice)
+				displayScore(result, 'papers', computerChoice)
+			})
+			scissors.addEventListener('click', e => {
+				let computerChoice = getComputerChoice()
+				let result = playRound('scissors', computerChoice)
+				displayScore(result, 'scissors', computerChoice)
+			})
+
+
 		</script>
 	</body>
 </html>
